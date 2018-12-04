@@ -1,136 +1,298 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "List.h"
+#include "BinarTree.h"
+#include <iostream>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace ListUnitTest
-{		
+namespace TreeUnitTest1
+{
 	TEST_CLASS(UnitTest1)
 	{
 	public:
-		std::string toString(List& list)
-		{
-			std::string result("");
-			for(auto it = list.begin(); it != list.end(); ++it)
-			{
-				result += std::to_string(*it);
-				result += std::string(" ");
-			}
-			return result;
-		}
-		
-		TEST_METHOD(CTOR)
-		{
-			List list;
-			Assert::IsTrue(true, L"", LINE_INFO());
-		}
 
-		TEST_METHOD(size)
+		TEST_METHOD(insert)
 		{
-			List list;
-			const auto expected = 0;
-			const auto actual = list.size();
+			BinarTree<int> bt;
+
+			bt.insert(5);
+			bt.insert(3);
+			bt.insert(1);
+			bt.insert(8);
+
+			std::ostringstream os;
+			auto coutBuff = std::cout.rdbuf();
+			auto osBuff = os.rdbuf();
+			std::cout.rdbuf(osBuff);
+
+			bt.print();
+
+			std::cout.rdbuf(coutBuff);
+
+			const std::string actual = os.str();
+			const std::string expected = "1 3 5 8 ";
+
 			Assert::AreEqual(expected, actual, L"", LINE_INFO());
 		}
 
-		TEST_METHOD(pushBack)
+		TEST_METHOD(min)
 		{
-			List list;
-			list.pushBack(5);
-			const int expectedSize = 1;
-			const int actual = list.size();
-			Assert::AreEqual(expectedSize, actual, L"", LINE_INFO());
-		}
+			BinarTree<std::string> bt{ "A", "B", "C", "D" };
 
-		TEST_METHOD(begin_read)
-		{
-			List list;
-			list.pushBack(5);
-			const int expected = 5;
-			const int actual = *(list.begin());
+			const std::string actual = bt.min()->m_value;
+			const std::string expected = "A";
+
 			Assert::AreEqual(expected, actual, L"", LINE_INFO());
 		}
 
-		TEST_METHOD(begin_write)
+		TEST_METHOD(max)
 		{
-			List list;
-			list.pushBack(5);
-			*(list.begin()) = 8;
+			BinarTree<int> bt;
 
-			const int expected = 8;
-			const int actual = *(list.begin());
+			bt.insert(5);
+			bt.insert(3);
+			bt.insert(1);
+			bt.insert(8);
+
+			const auto actual = bt.max()->m_value;
+			const auto expected = 8;
+
 			Assert::AreEqual(expected, actual, L"", LINE_INFO());
 		}
 
-		TEST_METHOD(multiple_pushBack)
+		TEST_METHOD(successor)
 		{
-			List list;
-			list.pushBack(5);
-			list.pushBack(6);
-			list.pushBack(7);
+			BinarTree<std::string> bt{ "A", "B", "C", "D" };
 
-			const int expected = 5;
-			const int actual = *(list.begin());
+			auto getRoot = bt.getRoot();
+
+			const std::string actual = bt.successor(getRoot, "A")->m_value;
+			const std::string expected("B");
+
 			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-			Assert::IsTrue(list.size() == 3, L"", LINE_INFO());
 		}
 
-		TEST_METHOD(begin_end)
+		TEST_METHOD(predecessor)
 		{
-			List list;
-			const auto expected = list.begin();
-			const auto actual = list.end();
+			BinarTree<int> bt;
 
-			Assert::IsTrue(list.begin() == list.end(), L"", LINE_INFO());
-		}
+			bt.insert(5);
+			bt.insert(3);
+			bt.insert(1);
+			bt.insert(8);
 
-		TEST_METHOD(multiple_popBack)
-		{
-			List list;
-			list.pushBack(5);
-			list.pushBack(6);
-			list.pushBack(7);
-			list.popBack();
-			const int expected = 6;
-			const int actual = list.back();
+			auto getRoot = bt.getRoot();
+
+			const auto actual = bt.predecessor(getRoot, 5)->m_value;
+			const auto expected = 3;
+
 			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-			Assert::IsTrue(list.size() == 2, L"", LINE_INFO());
 		}
 
-		TEST_METHOD(pushFront)
+		TEST_METHOD(getRoot)
 		{
-			List list;
-			list.pushFront(5);
-			list.pushFront(6);
-			list.pushFront(7);
+			BinarTree<int> bt;
 
-			const int expected = 7;
-			const int actual = list.front();
+			bt.insert(5);
+			bt.insert(3);
+			bt.insert(1);
+			bt.insert(8);
+
+			const auto actual = bt.getRoot()->m_value;
+			const auto expected = 5;
+
 			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-			Assert::IsTrue(list.size() == 3, L"", LINE_INFO());
 		}
 
-		TEST_METHOD(popFront)
+		TEST_METHOD(initializerList)
 		{
-			List list;
-			list.pushFront(5);
-			list.pushFront(6);
-			list.pushFront(7);
-			list.popFront();
+			BinarTree<int> bt{ 5, 3, 1, 8 };
 
-			const int expected = 6;
-			const int actual = list.front();
+			std::ostringstream os;
+			auto coutBuff = std::cout.rdbuf();
+			auto osBuff = os.rdbuf();
+			std::cout.rdbuf(osBuff);
+
+			bt.print();
+
+			std::cout.rdbuf(coutBuff);
+
+			const std::string actual = os.str();
+			const std::string expected = "1 3 5 8 ";
+
 			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-			Assert::IsTrue(list.size() == 2, L"", LINE_INFO());
 		}
 
-		TEST_METHOD(isEmpty)
+		TEST_METHOD(findTrue)
 		{
-			List list;
+			BinarTree<int> bt;
 
-			Assert::IsTrue(list.isEmpty(), L"", LINE_INFO());
-			Assert::IsTrue(list.size() == 0, L"", LINE_INFO());
+			bt.insert(5);
+			bt.insert(3);
+			bt.insert(1);
+			bt.insert(8);
+
+			const auto actual = bt.find(3)->m_value;
+			const auto expected = 3;
+
+			Assert::AreEqual(expected, actual, L"", LINE_INFO());
+		}
+
+		TEST_METHOD(maxDepth)
+		{
+			BinarTree<int> bt;
+
+			bt.insert(9);
+			bt.insert(11);
+			bt.insert(1);
+			bt.insert(5);
+			bt.insert(3);
+			bt.insert(17);
+			bt.insert(4);
+			bt.insert(13);
+			bt.insert(15);
+			bt.insert(14);
+
+			const auto actual = bt.maxDepth();
+			const auto expected = 5;
+
+			Assert::AreEqual(expected, actual, L"", LINE_INFO());
+		}
+
+		TEST_METHOD(minDepth)
+		{
+			BinarTree<int> bt;
+
+			bt.insert(9);
+			bt.insert(11);
+			bt.insert(1);
+			bt.insert(5);
+			bt.insert(3);
+			bt.insert(17);
+			//bt.insert(4);
+			bt.insert(13);
+			bt.insert(15);
+			bt.insert(14);
+
+			const auto actual = bt.minDepth();
+			const auto expected = 3;
+
+			Assert::AreEqual(expected, actual, L"", LINE_INFO());
+		}
+
+		TEST_METHOD(inorder)
+		{
+			BinarTree<int> bt{ 9, 11, 1, 5, 3, 17, 4, 13, 15, 14 };
+
+			std::ostringstream os;
+			auto coutBuff = std::cout.rdbuf();
+			auto osBuff = os.rdbuf();
+			std::cout.rdbuf(osBuff);
+
+			bt.inorder(bt.getRoot());
+
+			std::cout.rdbuf(coutBuff);
+
+			const std::string actual = os.str();
+			const std::string expected = "1 3 4 5 9 11 13 14 15 17 ";
+
+			Assert::AreEqual(expected, actual, L"", LINE_INFO());
+		}
+
+		TEST_METHOD(preorder)
+		{
+			BinarTree<int> bt{ 9, 11, 1, 5, 3, 17, 4, 13, 15, 14 };
+
+			std::ostringstream os;
+			auto coutBuff = std::cout.rdbuf();
+			auto osBuff = os.rdbuf();
+			std::cout.rdbuf(osBuff);
+
+			bt.preorder(bt.getRoot());
+
+			std::cout.rdbuf(coutBuff);
+
+			const std::string actual = os.str();
+			const std::string expected = "9 1 5 3 4 11 17 13 15 14 ";
+
+			Assert::AreEqual(expected, actual, L"", LINE_INFO());
+		}
+
+		TEST_METHOD(postorder)
+		{
+			BinarTree<int> bt{ 9, 11, 1, 5, 3, 17, 4, 13, 15, 14 };
+
+			std::ostringstream os;
+			auto coutBuff = std::cout.rdbuf();
+			auto osBuff = os.rdbuf();
+			std::cout.rdbuf(osBuff);
+
+			bt.postorder(bt.getRoot());
+
+			std::cout.rdbuf(coutBuff);
+
+			const std::string actual = os.str();
+			const std::string expected = "4 3 5 1 14 15 13 17 11 9 ";
+
+			Assert::AreEqual(expected, actual, L"", LINE_INFO());
+		}
+
+		TEST_METHOD(bfsTravers)
+		{
+			BinarTree<int> bt{ 21, 6, 8, 15, 32, 41, -3, 65 };
+
+			std::ostringstream os;
+			auto coutBuff = std::cout.rdbuf();
+			auto osBuff = os.rdbuf();
+			std::cout.rdbuf(osBuff);
+
+			bt.bfsTravers();
+
+			std::cout.rdbuf(coutBuff);
+
+			const std::string actual = os.str();
+			const std::string expected = "21 6 32 -3 8 41 15 65 ";
+
+			Assert::AreEqual(expected, actual, L"", LINE_INFO());
+		}
+
+		TEST_METHOD(dfsTravers)
+		{
+			BinarTree<int> bt{ 21, 6, 8, 15, 32, 41, -3, 65 };
+
+			std::ostringstream os;
+			auto coutBuff = std::cout.rdbuf();
+			auto osBuff = os.rdbuf();
+			std::cout.rdbuf(osBuff);
+
+			bt.dfsTravers();
+
+			std::cout.rdbuf(coutBuff);
+
+			const std::string actual = os.str();
+			const std::string expected = "21 32 41 65 6 8 15 -3 ";
+
+			Assert::AreEqual(expected, actual, L"", LINE_INFO());
+		}
+
+		TEST_METHOD(deleteNode)
+		{
+			BinarTree<int> bt{ 9, 11, 1, 5, 3, 17, 4, 13, 15, 14 };
+
+			std::ostringstream os;
+			auto coutBuff = std::cout.rdbuf();
+			auto osBuff = os.rdbuf();
+			std::cout.rdbuf(osBuff);
+
+			bt.deleteNode(bt.getRoot(), 11);
+			bt.inorder(bt.getRoot());
+
+			std::cout.rdbuf(coutBuff);
+
+			const std::string actual = os.str();
+			const std::string expected = "1 3 4 5 9 13 14 15 17 ";
+
+			Assert::AreEqual(expected, actual, L"", LINE_INFO());
 		}
 	};
 }

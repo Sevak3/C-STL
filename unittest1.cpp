@@ -1,280 +1,136 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "Vector.h"
-#include <string>
+#include "List.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
-namespace VectorUnitTest
+namespace ListUnitTest
 {		
-	TEST_CLASS(VectorUnitTest)
+	TEST_CLASS(UnitTest1)
 	{
-	private:
-		static std::string toString(Vector& vec)
+	public:
+		std::string toString(List& list)
 		{
-			std::string result;
-
-			for (int i = 0; i < vec.size(); ++i)
+			std::string result("");
+			for(auto it = list.begin(); it != list.end(); ++it)
 			{
-				const int value = vec[i];
-
-				result += std::to_string(value);
-				result += ' ';
+				result += std::to_string(*it);
+				result += std::string(" ");
 			}
-
 			return result;
 		}
-
-	public:
 		
 		TEST_METHOD(CTOR)
 		{
-			Vector vec;
+			List list;
+			Assert::IsTrue(true, L"", LINE_INFO());
 		}
 
-		TEST_METHOD(CCTOR)
+		TEST_METHOD(size)
 		{
-			Vector vec1;
-			for (int i = 0; i < 5; ++i)
-			{
-				vec1.pushBackInMemory(i);
-			}
-			Vector vec2(vec1);
+			List list;
+			const auto expected = 0;
+			const auto actual = list.size();
+			Assert::AreEqual(expected, actual, L"", LINE_INFO());
+		}
 
-			const int actual = vec2.size();
+		TEST_METHOD(pushBack)
+		{
+			List list;
+			list.pushBack(5);
+			const int expectedSize = 1;
+			const int actual = list.size();
+			Assert::AreEqual(expectedSize, actual, L"", LINE_INFO());
+		}
+
+		TEST_METHOD(begin_read)
+		{
+			List list;
+			list.pushBack(5);
 			const int expected = 5;
+			const int actual = *(list.begin());
 			Assert::AreEqual(expected, actual, L"", LINE_INFO());
 		}
 
-		TEST_METHOD(beginTest)
+		TEST_METHOD(begin_write)
 		{
-			Vector vec;
-			vec.pushBackInMemory(10);
-			const int expected = 10;
-			const int actual = *(vec.begin());
+			List list;
+			list.pushBack(5);
+			*(list.begin()) = 8;
+
+			const int expected = 8;
+			const int actual = *(list.begin());
 			Assert::AreEqual(expected, actual, L"", LINE_INFO());
 		}
 
-		TEST_METHOD(endTest)
+		TEST_METHOD(multiple_pushBack)
 		{
-			Vector vec;
-			vec.pushBackInMemory(10);
-			vec.pushBackInMemory(20);
-			vec.pushBackInMemory(30);
-			const int expected = 30;
-			const int actual = *(vec.end() - 1);
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
+			List list;
+			list.pushBack(5);
+			list.pushBack(6);
+			list.pushBack(7);
 
-		TEST_METHOD(isEmptyTest)
-		{
-			Vector vec;
-			vec.pushBackInMemory(10);
-			const bool expected = false;
-			const bool actual = vec.isEmpty();
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(isNotEmptyTest)
-		{
-			Vector vec;
-			const bool expected = true;
-			const bool actual = vec.isEmpty();
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(isFullTest)
-		{
-			Vector vec;
-			for (int i = 0; i < 10; ++i)
-			{
-				vec.pushBackInMemory(i);
-			}
-			const bool expected = true;
-			const bool actual = vec.isFull();
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(isNotFullTest)
-		{
-			Vector vec;
-			vec.pushBackInMemory(10);
-			const bool expected = false;
-			const bool actual = vec.isFull();
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(pushBackTestBySize)
-		{
-			Vector vec;
-			vec.pushBackInMemory(10);
-			vec.pushBackInMemory(20);
-			const int expected = 2;
-			const int actual = vec.size();
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(pushBackTestByElement)
-		{
-			Vector vec;
-			vec.pushBackInMemory(10);
-			const int expected = 10;
-			const int actual = vec.getElement(0);
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(popBackTestBySize)
-		{
-			Vector vec;
-			vec.pushBackInMemory(10);
-			vec.pushBackInMemory(20);
-			vec.popBackInMemory();
-			const int expected = 1;
-			const int actual = vec.size();
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(popBackTestByElement)
-		{
-			Vector vec;
-			vec.pushBackInMemory(10);
-			vec.pushBackInMemory(20);
-			vec.popBackInMemory();
-			const int expected = 10;
-			const int actual = vec.getElement(0);
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(sizeTest)
-		{
-			Vector vec;
-			vec.pushBackInMemory(10);
-			vec.pushBackInMemory(20);
-			const int expected = 2;
-			const int actual = vec.size();
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(getCapacityTest)
-		{
-			Vector vec;
-			const int expected = 10;
-			const int actual = vec.getCapacity();
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(getElementTest)
-		{
-			Vector vec;
-			vec.pushBackInMemory(10);
-			vec.pushBackInMemory(20);
-			const int expected = 20;
-			const int actual = vec.getElement(1);
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(insertBeginTest)
-		{
-			Vector vec;
-			Vector::Iterator itr = vec.begin();
-			vec.pushBackInMemory(10);
-			vec.pushBackInMemory(20);
-			vec.pushBackInMemory(30);
-			vec.insert(itr, 40);
-			const std::string expected = "40 10 20 30 ";
-			const std::string actual = toString(vec);
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(insertEndTest)
-		{
-			Vector vec;
-			Vector::Iterator itr = vec.begin() + 2;
-			vec.pushBackInMemory(10);
-			vec.pushBackInMemory(20);
-			vec.pushBackInMemory(30);
-			vec.insert(itr, 40);
-			const std::string expected = "10 20 40 30 ";
-			const std::string actual = toString(vec);
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(eraseBeginTest)
-		{
-			Vector vec;
-			Vector::Iterator itr = vec.begin();
-			vec.pushBackInMemory(10);
-			vec.pushBackInMemory(20);
-			vec.pushBackInMemory(30);
-			vec.erase(itr);
-			const std::string expected = "20 30 ";
-			const std::string actual = toString(vec);
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(eraseEndTest)
-		{
-			Vector vec;
-			Vector::Iterator itr = vec.begin() + 2;
-			vec.pushBackInMemory(10);
-			vec.pushBackInMemory(20);
-			vec.pushBackInMemory(30);
-			vec.erase(itr);
-			const std::string expected = "10 20 ";
-			const std::string actual = toString(vec);
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(appendElementSizeTest)
-		{
-			Vector vec;
-			for (int i = 1; i <= vec.getCapacity(); ++i)
-			{
-				vec.pushBackInMemory(i);
-			}
-			vec.appendElement(10);
-			const int expected = 20;
-			const int actual = vec.getCapacity();
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(appendElementPushBackTest)
-		{
-			Vector vec;
-			for (int i = 1; i <= 5; ++i)
-			{
-				vec.pushBackInMemory(i);
-			}
-			vec.appendElement(10);
-			const std::string expected = "1 2 3 4 5 10 ";
-			const std::string actual = toString(vec);
-			Assert::AreEqual(expected, actual, L"", LINE_INFO());
-		}
-
-		TEST_METHOD(reducinglementSizeTest)
-		{
-			Vector vec;
-			for (int i = 0; i < 4; ++i)
-			{
-				vec.pushBackInMemory(i);
-			}
-			vec.reducingElment(1);
 			const int expected = 5;
-			const int actual = vec.getCapacity();
+			const int actual = *(list.begin());
 			Assert::AreEqual(expected, actual, L"", LINE_INFO());
+			Assert::IsTrue(list.size() == 3, L"", LINE_INFO());
 		}
 
-		TEST_METHOD(reducinglementPopBackTest)
+		TEST_METHOD(begin_end)
 		{
-			Vector vec;
-			for (int i = 0; i < 5; ++i)
-			{
-				vec.pushBackInMemory(i);
-			}
-			vec.reducingElment(1);
-			const std::string expected = "0 1 2 3 ";
-			const std::string actual = toString(vec);
+			List list;
+			const auto expected = list.begin();
+			const auto actual = list.end();
+
+			Assert::IsTrue(list.begin() == list.end(), L"", LINE_INFO());
+		}
+
+		TEST_METHOD(multiple_popBack)
+		{
+			List list;
+			list.pushBack(5);
+			list.pushBack(6);
+			list.pushBack(7);
+			list.popBack();
+			const int expected = 6;
+			const int actual = list.back();
 			Assert::AreEqual(expected, actual, L"", LINE_INFO());
+			Assert::IsTrue(list.size() == 2, L"", LINE_INFO());
+		}
+
+		TEST_METHOD(pushFront)
+		{
+			List list;
+			list.pushFront(5);
+			list.pushFront(6);
+			list.pushFront(7);
+
+			const int expected = 7;
+			const int actual = list.front();
+			Assert::AreEqual(expected, actual, L"", LINE_INFO());
+			Assert::IsTrue(list.size() == 3, L"", LINE_INFO());
+		}
+
+		TEST_METHOD(popFront)
+		{
+			List list;
+			list.pushFront(5);
+			list.pushFront(6);
+			list.pushFront(7);
+			list.popFront();
+
+			const int expected = 6;
+			const int actual = list.front();
+			Assert::AreEqual(expected, actual, L"", LINE_INFO());
+			Assert::IsTrue(list.size() == 2, L"", LINE_INFO());
+		}
+
+		TEST_METHOD(isEmpty)
+		{
+			List list;
+
+			Assert::IsTrue(list.isEmpty(), L"", LINE_INFO());
+			Assert::IsTrue(list.size() == 0, L"", LINE_INFO());
 		}
 	};
 }
